@@ -6,9 +6,9 @@ import { deleteFromCloudinary, uploadCloudinary } from "../utils/cloudinary.js";
 
 const createProduct = asyncHandler(async (req, res) => {
   const { name, description, price, category, stock, ratings } = req.body;
-
+  console.log("b", req.body);
   if (
-    [name, description, price, category, stock, ratings].some(
+    [name, description, price, stock, ratings].some(
       (fields) =>
         fields.trim() === "" || isNaN(price) || isNaN(stock) || isNaN(ratings)
     )
@@ -16,8 +16,8 @@ const createProduct = asyncHandler(async (req, res) => {
     throw new apiError(400, "all fields are required");
   }
 
-  const existProduct = Product.findOne({ name });
-  if (!existProduct) {
+  const existProduct = await Product.findOne({ name });
+  if (existProduct) {
     throw new apiError(400, "product already exist");
   }
 
@@ -275,41 +275,6 @@ const getProductReview = asyncHandler(async (req, res) => {
     .status(200)
     .json(new apiResponse(200, review, "all reviews fetch successfully"));
 });
-
-// const deleteReview = async (req, res) => {
-//   const { productId } = req.params;
-//   const { reviewsId } = req.query;
-
-//   const product = await Product.findById(productId);
-
-//   if (!product) {
-//     throw new apiError(400, "product not found");
-//   }
-
-//   const review = product.reviews.find(
-//     (rev) => rev?._id.toString() === reviewsId
-//   );
-
-//   if (review === -1) {
-//     throw new apiError(404, "review not found");
-//   }
-
-//   product.reviews.split(review, 1);
-
-//   product.numReview = product.reviews.length;
-
-//   product.ratings =
-//     product.reviews.reduce((acc, item) => acc + item.ratings, 0) /
-//       product.reviews.length || 0;
-
-//   await product.save({ validateBeforeSave: false });
-
-//   console.log("rat", product.ratings);
-
-//   return res
-//     .status(200)
-//     .json(new apiResponse(200, product, "review deleted successfully"));
-// };
 
 const deleteReview = async (req, res) => {
   const { productId, reviewId } = req.params; // Extract productId and reviewId from request parameters
