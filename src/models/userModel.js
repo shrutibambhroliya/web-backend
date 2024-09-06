@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      requires: [true, "password is required"],
+      required: [true, "password is required"],
     },
     refreshToken: {
       type: String,
@@ -66,7 +66,7 @@ userSchema.methods.generateAccessToken = function () {
   );
 };
 
-userSchema.method.generateRefreshToken = function () {
+userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
       _id: this._id,

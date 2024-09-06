@@ -8,16 +8,17 @@ import jwt from "jsonwebtoken";
 const generateAccessAndRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
-    console.log(user);
+    console.log(user, "user");
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 
     user.refreshToken = refreshToken;
-    console.log("user-Ref", user.refreshToken);
+    // console.log("userRef", user.refreshToken);
 
     await user.save({ validateBeforeSave: false });
     return { accessToken, refreshToken };
   } catch (error) {
+    console.log("token genrare k time error");
     throw new apiError(
       500,
       "something went wrong while generating refresh and access token"
@@ -136,7 +137,7 @@ const logOutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
-      $unset: { refreshToken },
+      $unset: { refreshToken: 1 },
     },
     {
       new: true,
@@ -205,26 +206,27 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 });
 
 const getUserProfile = asyncHandler(async (req, res) => {
-  try {
-    const user = await User.findById(req.user?._id).select(
-      "-password -refreshToken"
-    );
+  return res
+    .status(200)
+    .json(new apiResponse(200, req.user, "get user fetched successfully"));
+});
 
-    if (user) {
-      res.json({
-        _id: user._id,
-        userName: userName.toLowerCase(),
-        email,
-        avatar: avatar.url,
-        role,
-      });
-    } else {
-      res.status(400);
-      throw new apiError(400, "userProfile not found");
-    }
-  } catch (error) {
-    res.status(400).json(400, "user not found");
+const changeCurrentPassword = asyncHandler(async (req, res) => {
+  const { newPassword, oldPassword } = req.body;
+  const user = await User.findById(req.user?._id);
+  const isCorrectPass = user.isPasswordCorrect(oldPassword);
+  console.log("oldPass", isCorrectPass);
+
+  if (!isCorrectPass) {
+    throw new apiError(400, "invalid old password");
   }
+
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+
+  return res
+    .status(200)
+    .json(new apiResponse(200, {}, "password change successfully"));
 });
 
 const updateUserProfile = asyncHandler(async (req, res) => {
@@ -286,12 +288,82 @@ const updateAvatar = asyncHandler(async (req, res) => {
     .json(new apiResponse(200, updateAvatar, "avatar updated successfully"));
 });
 
+const getAllUser = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.find({}).select("-password -refreshToken");
+
+    if (!user || user.length === 0) {
+      throw new apiError(400, "users not found");
+    }
+
+    return res
+      .status(200)
+      .json(new apiResponse(200, user, "users have founded"));
+  } catch (error) {
+    throw new apiError(400, error?.message || "server error");
+  }
+});
+
+const updateUserRole = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const { role } = req.body;
+
+  if (role !== "admin" && role !== "user") {
+    throw new apiError(400, "invalid role provided");
+  }
+
+  const updateRole = await User.findByIdAndUpdate(
+    userId,
+    {
+      $set: { role: role },
+    },
+    {
+      new: true,
+    }
+  );
+
+  if (!updateRole) {
+    throw new apiError(400, "user not found");
+  }
+
+  return res
+    .status(200)
+    .json(new apiResponse(200, updateRole, "role updated successfully"));
+});
+
+const deleteUser = asyncHandler(async (req, res) => {
+  if (req.user.role !== "admin") {
+    throw new apiError(400, "access denied");
+  }
+  console.log("User Role:", req.user.role);
+
+  const { userId } = req.params;
+  console.log("userId", userId);
+
+  try {
+    const result = await User.findByIdAndDelete(userId);
+    console.log("result", result);
+    if (!result) {
+      throw new apiError(400, "user not found");
+    }
+
+    return res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.log("Error during deletion:", error);
+    throw new apiError(400, error.message || "server error");
+  }
+});
+
 export {
   registerUser,
   loginUser,
   logOutUser,
   refreshAccessToken,
   getUserProfile,
+  changeCurrentPassword,
   updateUserProfile,
   updateAvatar,
+  getAllUser,
+  updateUserRole,
+  deleteUser,
 };
