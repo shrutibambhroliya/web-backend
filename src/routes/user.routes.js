@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJwt } from "../middlewares/auth.middleware.js";
+import { isAdmin } from "../middlewares/auth.middleware.js";
 import { registerUser } from "../controllers/user.controller.js";
 import { loginUser } from "../controllers/user.controller.js";
 import { logOutUser } from "../controllers/user.controller.js";
@@ -35,6 +36,6 @@ router
   .patch(verifyJwt, upload.single("avatar"), updateAvatar);
 router.route("/getAll-user").get(verifyJwt, getAllUser);
 router.route("/c/:userId").patch(verifyJwt, updateUserRole);
-router.route("/c/:userId").delete(verifyJwt, deleteUser);
+router.route("/c/:userId").delete(verifyJwt, isAdmin, deleteUser);
 
 export default router;

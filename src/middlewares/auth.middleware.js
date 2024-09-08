@@ -2,6 +2,7 @@ import { apiError } from "../utils/apiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
 import { User } from "../models/userModel.js";
+import { apiResponse } from "../utils/apiResponse.js";
 
 export const verifyJwt = asyncHandler(async (req, res, next) => {
   try {
@@ -28,3 +29,14 @@ export const verifyJwt = asyncHandler(async (req, res, next) => {
     throw new apiError(404, error?.message || "invalid access token");
   }
 });
+
+export const isAdmin = (req, res, next) => {
+  if (req.user && req.user.role === "admin") {
+    next();
+  } else {
+    res.status(403).json({
+      success: false,
+      message: "Access denied. Admins only.",
+    });
+  }
+};

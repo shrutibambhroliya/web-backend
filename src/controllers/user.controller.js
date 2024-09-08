@@ -28,7 +28,7 @@ const generateAccessAndRefreshToken = async (userId) => {
 
 const registerUser = asyncHandler(async (req, res) => {
   const { userName, email, password } = req.body;
-  console.log("email", email);
+  console.log("email", req.body);
 
   if ([userName, email, password].some((field) => field?.trim() === "")) {
     throw new apiError(404, "all field is required");
@@ -213,8 +213,10 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { newPassword, oldPassword } = req.body;
+
   const user = await User.findById(req.user?._id);
-  const isCorrectPass = user.isPasswordCorrect(oldPassword);
+
+  const isCorrectPass = await user.isPasswordCorrect(oldPassword);
   console.log("oldPass", isCorrectPass);
 
   if (!isCorrectPass) {
