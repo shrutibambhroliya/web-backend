@@ -9,9 +9,6 @@ import {
   getProductById,
   updateProduct,
   updateProductImage,
-  addProductReview,
-  getProductReview,
-  deleteReview,
 } from "../controllers/product.controller.js";
 
 const router = Router();
@@ -37,8 +34,5 @@ router
     updateProductImage
   );
 router.route("/d/:productId").delete(verifyJwt, isAdmin, deleteProduct);
-router.route("/d/:productId").post(verifyJwt, addProductReview);
-router.route("/h/:productId").get(verifyJwt, getProductReview);
-router.route("/h/:productId/review/:reviewId").delete(verifyJwt, deleteReview);
 
 export default router;
