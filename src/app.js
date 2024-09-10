@@ -21,6 +21,7 @@ import categoryRouter from "./routes/category.routes.js";
 import orderRouter from "./routes/order.routes.js";
 import cartRouter from "./routes/cart.routes.js";
 import reviewRouter from "./routes/review.routes.js";
+import paymentRouter from "./routes/payment.routes.js";
 
 app.use("/api/a1/users", userRouter);
 app.use("/api/a1/products", productRouter);
@@ -28,5 +29,6 @@ app.use("/api/a1/category", categoryRouter);
 app.use("/api/a1/order", orderRouter);
 app.use("/api/a1/cart", cartRouter);
 app.use("/api/a1/review", reviewRouter);
+app.use("/api/a1/payment", paymentRouter);
 
 export default app;
