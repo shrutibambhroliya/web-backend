@@ -4,6 +4,7 @@ import { apiError } from "../utils/apiError.js";
 import { Cart } from "../models/cartModel.js";
 
 const addItemToCart = asyncHandler(async (req, res) => {
+<<<<<<< HEAD
   const { items } = req.body;
   console.log("req.body", req.body);
   const userId = req.user.id;
@@ -30,6 +31,31 @@ const addItemToCart = asyncHandler(async (req, res) => {
       cart = await Cart.create({
         user: userId,
         cartItem: items,
+=======
+  const { user, product, quantity } = req.body;
+
+  console.log("req.body", req.body);
+
+  try {
+    let cart = await Cart.findOne({ user });
+
+    if (cart) {
+      const itemIndex = cart.cartItem.findIndex(
+        (item) => item.product.toString() === product.toString()
+      );
+
+      if (itemIndex > -1) {
+        let productItem = cart.cartItem[itemIndex];
+        productItem.quantity += quantity;
+        cart.cartItem[itemIndex] = productItem;
+      } else {
+        cart.cartItem.push({ product, quantity });
+      }
+    } else {
+      cart = new Cart({
+        user,
+        cartItem: [{ product, quantity }],
+>>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
       });
     }
 
@@ -43,8 +69,15 @@ const addItemToCart = asyncHandler(async (req, res) => {
 });
 
 const getUserCart = asyncHandler(async (req, res) => {
+<<<<<<< HEAD
   try {
     const cartUser = await Cart.find({});
+=======
+  const userId = req.user.id;
+
+  try {
+    const cartUser = await Cart.findOne({ user: userId }).populate("cartItem");
+>>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
 
     if (!cartUser) {
       throw new apiError(400, "cart not found ");
@@ -59,12 +92,19 @@ const getUserCart = asyncHandler(async (req, res) => {
 
 const removeItemFromCart = asyncHandler(async (req, res) => {
   const { product } = req.body;
+<<<<<<< HEAD
   console.log("product", product);
   const userId = req.user.id;
   console.log("user", userId);
   try {
     let cart = await Cart.findOne({ user: userId });
     console.log("cart", await Cart.findOne({ user: userId }));
+=======
+  const userId = req.user.id;
+
+  try {
+    let cart = await Cart.findOne({ user: userId });
+>>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
 
     if (!cart) {
       throw new apiError(400, "cart not found");
@@ -73,6 +113,7 @@ const removeItemFromCart = asyncHandler(async (req, res) => {
     const itemIndex = cart.cartItem.findIndex(
       (item) => item.product.toString() === product.toString()
     );
+<<<<<<< HEAD
     console.log(
       "c",
       cart.cartItem.findIndex(
@@ -80,6 +121,8 @@ const removeItemFromCart = asyncHandler(async (req, res) => {
       )
     );
     console.log("item", itemIndex);
+=======
+>>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
 
     if (itemIndex === -1) {
       return res.status(400).json(new apiError(400, "item not found in cart"));

@@ -3,11 +3,20 @@ import mongoose from "mongoose";
 const orderSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+<<<<<<< HEAD
 
     cart: { type: mongoose.Schema.Types.ObjectId, ref: "Cart" },
 
     name: { type: String, required: true },
     lastName: { type: String, required: true },
+=======
+    orderItem: [
+      {
+        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+        quantity: { type: Number, required: true },
+      },
+    ],
+>>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
     shippingAddress: {
       address: { type: String, required: true },
       city: { type: String, required: true },

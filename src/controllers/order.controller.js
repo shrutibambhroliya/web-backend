@@ -4,6 +4,7 @@ import { apiError } from "../utils/apiError.js";
 import { Order } from "../models/orderModel.js";
 
 const orderCreate = asyncHandler(async (req, res) => {
+<<<<<<< HEAD
   const { name, lastName, cart, shippingAddress, paymentMethod, totalPrice } =
     req.body;
   console.log("b", req.body);
@@ -13,11 +14,25 @@ const orderCreate = asyncHandler(async (req, res) => {
   }
 
   if (!shippingAddress || !paymentMethod || !totalPrice || !name || !lastName) {
+=======
+  const { orderItem, shippingAddress, paymentMethod, totalPrice } = req.body;
+  console.log("b", req.body);
+
+  if (!orderItem || orderItem.length === 0) {
+    throw new apiError(400, "orderItem not provide");
+  }
+
+  if (!shippingAddress || !paymentMethod || !totalPrice) {
+>>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
     throw new apiError(400, "all fields is require");
   }
 
   const existOrder = await Order.findOne({
+<<<<<<< HEAD
     $or: [{ name }, { lastName }],
+=======
+    $or: [{ orderItem }, { shippingAddress }],
+>>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
   });
 
   if (existOrder) {
@@ -26,9 +41,13 @@ const orderCreate = asyncHandler(async (req, res) => {
 
   const order = await Order.create({
     user: req.user._id,
+<<<<<<< HEAD
     name,
     lastName,
     cart,
+=======
+    orderItem,
+>>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
     shippingAddress,
     paymentMethod,
     totalPrice,
@@ -54,6 +73,7 @@ const getOrderById = asyncHandler(async (req, res) => {
 
 const getUserOrder = asyncHandler(async (req, res) => {
   try {
+<<<<<<< HEAD
     const order = await Order.find({})
       .populate({
         path: "cart",
@@ -63,6 +83,9 @@ const getUserOrder = asyncHandler(async (req, res) => {
       })
 
       .populate("user");
+=======
+    const order = await Order.find({});
+>>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
     if (!order || order.length === 0) {
       throw new apiError(400, "order not found");
     }
