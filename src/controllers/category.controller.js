@@ -9,7 +9,7 @@ const createCategory = asyncHandler(async (req, res) => {
   console.log("req", req.body);
 
   const allowedCategories = ["Men", "Women", "Kids"];
-  const allowTypes = ["TopWear", "BottomWear", "WinterWear", "Shoes", "Caps"];
+  const allowTypes = ["TopWear", "BottomWear", "WinterWear"];
 
   if ([name, description].some((field) => field?.trim() === "")) {
     throw new apiError(404, "all field is require");

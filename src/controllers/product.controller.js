@@ -5,22 +5,45 @@ import { Product } from "../models/productModel.js";
 import { deleteFromCloudinary, uploadCloudinary } from "../utils/cloudinary.js";
 
 const createProduct = asyncHandler(async (req, res) => {
-  const { name, description, price, category, stock, ratings } = req.body;
+  const { name, description, price, parentCategory, type } = req.body;
   console.log("b", req.body);
+
+  // check for required field
   if (
-    [name, description, price, stock, ratings].some(
-      (fields) =>
-        fields.trim() === "" || isNaN(price) || isNaN(stock) || isNaN(ratings)
+    [name, description, price].some(
+      (fields) => fields.trim() === "" || isNaN(price)
     )
   ) {
     throw new apiError(400, "all fields are required");
   }
 
-  const existProduct = await Product.findOne({ name });
-  if (existProduct) {
-    throw new apiError(400, "product already exist");
+  // validate category
+  const validParentCategories = ["Men", "Women", "Kids"];
+  const validTypes = [
+    "TopWear",
+    "BottomWear",
+    "WinterWear",
+    "Shoes",
+    "HandBags",
+    "Caps",
+    "Glasses",
+  ];
+
+  if (!validParentCategories.includes(parentCategory)) {
+    throw new error(400, "Invalid parent category!");
   }
 
+  if (!validTypes.includes(type)) {
+    throw new error(400, "Invalid type!");
+  }
+
+  // check if product already exist!
+  // const existProduct = await Product.findOne({ name });
+  // if (existProduct) {
+  //   throw new apiError(400, "product already exist");
+  // }
+
+  // handle product images
   let productImages = [];
   if (req.files && req.files.images && req.files.images.length > 0) {
     productImages = req.files.images.map((file) => file.path);
@@ -29,6 +52,7 @@ const createProduct = asyncHandler(async (req, res) => {
     throw new apiError(400, "product images are required");
   }
 
+  // upload image to cloudinary
   const uploadImages = await Promise.all(
     productImages.map(async (image) => {
       const uploadResult = await uploadCloudinary(image);
@@ -41,14 +65,16 @@ const createProduct = asyncHandler(async (req, res) => {
     throw new apiError(400, "some images could not be upload Cloudinary");
   }
 
+  // create product
   const product = await Product.create({
     name,
     description,
     price,
-    stock,
-    category,
-    ratings,
     images: uploadImages,
+    category: {
+      parentCategory,
+      type,
+    },
     createdBy: req.user._id,
   });
 

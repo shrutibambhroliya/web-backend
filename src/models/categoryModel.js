@@ -13,7 +13,7 @@ const categorySchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ["TopWear", "BottomWear", "WinterWear", "Shoes", "Caps"], // Validating the type values
+    enum: ["TopWear", "BottomWear", "WinterWear"], // Validating the type values
     default: null,
   },
 });

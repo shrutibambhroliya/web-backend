@@ -21,20 +21,28 @@ const productSchema = new mongoose.Schema(
       },
     ],
     category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
-      required: true,
+      parentCategory: {
+        type: String,
+        enum: ["Men", "Women", "Kids"], // Allowed values
+        default: null,
+        required: true,
+      },
+      type: {
+        type: String,
+        enum: [
+          "TopWear",
+          "BottomWear",
+          "WinterWear",
+          "Shoes",
+          "HandBags",
+          "Caps",
+          "Glasses",
+        ], // Validating the type values
+        default: null,
+        required: true,
+      },
     },
-    stock: {
-      type: Number,
-      required: true,
-    },
-    ratings: {
-      type: Number,
-      required: true,
-      min: 0,
-      max: 5,
-    },
+
     reviews: [reviewSchema],
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
