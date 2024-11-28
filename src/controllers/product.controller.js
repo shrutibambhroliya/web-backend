@@ -5,7 +5,6 @@ import { Product } from "../models/productModel.js";
 import { deleteFromCloudinary, uploadCloudinary } from "../utils/cloudinary.js";
 
 const createProduct = asyncHandler(async (req, res) => {
-<<<<<<< HEAD
   const { name, description, price, parentCategory, type } = req.body;
   console.log("b", req.body);
 
@@ -13,20 +12,11 @@ const createProduct = asyncHandler(async (req, res) => {
   if (
     [name, description, price].some(
       (fields) => fields.trim() === "" || isNaN(price)
-=======
-  const { name, description, price, category, stock, ratings } = req.body;
-  console.log("b", req.body);
-  if (
-    [name, description, price, stock, ratings].some(
-      (fields) =>
-        fields.trim() === "" || isNaN(price) || isNaN(stock) || isNaN(ratings)
->>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
     )
   ) {
     throw new apiError(400, "all fields are required");
   }
 
-<<<<<<< HEAD
   // validate category
   const validParentCategories = ["Men", "Women", "Kids"];
   const validTypes = [
@@ -54,13 +44,7 @@ const createProduct = asyncHandler(async (req, res) => {
   // }
 
   // handle product images
-=======
-  const existProduct = await Product.findOne({ name });
-  if (existProduct) {
-    throw new apiError(400, "product already exist");
-  }
 
->>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
   let productImages = [];
   if (req.files && req.files.images && req.files.images.length > 0) {
     productImages = req.files.images.map((file) => file.path);
@@ -69,10 +53,6 @@ const createProduct = asyncHandler(async (req, res) => {
     throw new apiError(400, "product images are required");
   }
 
-<<<<<<< HEAD
-  // upload image to cloudinary
-=======
->>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
   const uploadImages = await Promise.all(
     productImages.map(async (image) => {
       const uploadResult = await uploadCloudinary(image);
@@ -85,15 +65,13 @@ const createProduct = asyncHandler(async (req, res) => {
     throw new apiError(400, "some images could not be upload Cloudinary");
   }
 
-<<<<<<< HEAD
   // create product
-=======
->>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
+
   const product = await Product.create({
     name,
     description,
     price,
-<<<<<<< HEAD
+
     images: uploadImages,
     category: {
       parentCategory,
@@ -104,15 +82,6 @@ const createProduct = asyncHandler(async (req, res) => {
 
   await product.save();
 
-=======
-    stock,
-    category,
-    ratings,
-    images: uploadImages,
-    createdBy: req.user._id,
-  });
-
->>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
   if (!product) {
     throw new apiError(400, "something went wrong while creating products");
   }
@@ -124,14 +93,11 @@ const createProduct = asyncHandler(async (req, res) => {
 
 const getAllProducts = asyncHandler(async (req, res) => {
   try {
-<<<<<<< HEAD
     const products = await Product.find({}).populate(
       "category",
       "parentCategory type"
     );
-=======
-    const products = await Product.find({});
->>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
+
     if (!products || products.length === 0) {
       throw new apiError(400, "products not found");
     }

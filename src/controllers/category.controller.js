@@ -4,7 +4,6 @@ import { apiError } from "../utils/apiError.js";
 import { Category } from "../models/categoryModel.js";
 
 const createCategory = asyncHandler(async (req, res) => {
-<<<<<<< HEAD
   const { name, description, parentCategory, type } = req.body;
 
   console.log("req", req.body);
@@ -24,17 +23,6 @@ const createCategory = asyncHandler(async (req, res) => {
     throw new apiError(404, "Invalid cloth types");
   }
 
-=======
-  const { name, description, parentCategory } = req.body;
-
-  console.log("req", req.body);
-  if (
-    [name, description, parentCategory].some((field) => field?.trim() === "")
-  ) {
-    throw new apiError(404, "all field is require");
-  }
-
->>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
   const existCategory = await Category.findOne({ name });
 
   if (existCategory) {
@@ -45,10 +33,8 @@ const createCategory = asyncHandler(async (req, res) => {
     name,
     description,
     parentCategory,
-<<<<<<< HEAD
+
     type,
-=======
->>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
   });
 
   if (!category) {
@@ -87,11 +73,8 @@ const getCategoryId = asyncHandler(async (req, res) => {
 
 const updateCategory = asyncHandler(async (req, res) => {
   const { categoryId } = req.params;
-<<<<<<< HEAD
+
   const { name, description, parentCategory, type } = req.body;
-=======
-  const { name, description, parentCategory } = req.body;
->>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
 
   if (!name || !description) {
     throw new apiError(400, "all field is required");
@@ -104,10 +87,8 @@ const updateCategory = asyncHandler(async (req, res) => {
         name,
         description,
         parentCategory,
-<<<<<<< HEAD
+
         type,
-=======
->>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
       },
     },
     { new: true }

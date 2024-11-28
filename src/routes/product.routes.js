@@ -23,11 +23,11 @@ router.route("/createProduct").post(
   isAdmin,
   createProduct
 );
-<<<<<<< HEAD
+
 router.route("/getAllProducts").get(getAllProducts);
-=======
+
 router.route("/getAllProducts").get(verifyJwt, getAllProducts);
->>>>>>> 3068a70022e2dfb0590b369687f5f66c8f344869
+
 router.route("/g/:productId").get(verifyJwt, getProductById);
 router.route("/g/:productId").patch(verifyJwt, isAdmin, updateProduct);
 router
