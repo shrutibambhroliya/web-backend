@@ -34,6 +34,7 @@ const productSchema = new mongoose.Schema(
           "BottomWear",
           "WinterWear",
           "Shoes",
+          "Belts",
           "HandBags",
           "Caps",
           "Glasses",

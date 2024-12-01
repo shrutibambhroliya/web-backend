@@ -24,6 +24,7 @@ const createProduct = asyncHandler(async (req, res) => {
     "BottomWear",
     "WinterWear",
     "Shoes",
+    "Belts",
     "HandBags",
     "Caps",
     "Glasses",
